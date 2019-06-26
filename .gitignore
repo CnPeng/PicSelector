@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ----以下为自定义的过滤规则-----
 .idea/*
 */.idea/
@@ -6,8 +5,8 @@
 gradle/*
 */.settings/
 */.DS_Store
-gradlew
-gradlew.bat
+#gradlew
+#gradlew.bat
 
 #---- 以下为 github 创建的 Android 过滤规则-----
 # Built application files
