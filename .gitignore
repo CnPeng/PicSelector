@@ -2,7 +2,7 @@
 .idea/*
 */.idea/
 .gradle/*
-gradle/*
+#gradle/*
 */.settings/
 */.DS_Store
 #gradlew
