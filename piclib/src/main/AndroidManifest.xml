@@ -1,0 +1,75 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.cnpeng.piclib">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- android:allowBackup="true"
+        android:icon="@drawable/sel"
+        android:label="@string/app_name"
+        android:supportsRtl="true"-->
+    <application android:theme="@style/AppTheme">
+
+        <activity
+            android:name="com.cnpeng.piclib.PictureSelectorActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.cnpeng.piclib.antwidget.video.activity.RecordVideoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.cropwidget.PictureMultiCuttingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.antwidget.TitleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.antwidget.video.activity.VideoPreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.PictureBaseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.PictureExternalPreviewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.PicturePlayAudioActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.PictureVideoPlayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.cnpeng.piclib.PicturePreviewActivity"
+            android:screenOrientation="portrait" />
+
+
+        <!-- 解决API24 及以上版本调用系统相机时报：FileUriExposedException 的情况 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <!--com.cnpeng.piclib.PictureFileProvider-->
+        <provider
+            android:name="com.cnpeng.piclib.PictureFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+</manifest>

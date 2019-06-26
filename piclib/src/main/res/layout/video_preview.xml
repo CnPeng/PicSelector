@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <!--0是加载中,1是播放中,2是播放完成 0需要显示默认图片和加载状态, 1需要显示videoview, 2需要显示默认图片和重播按钮-->
+        <variable
+            name="status"
+            type="int"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black">
+
+        <!--0是加载中,1是播放中,2是播放完成 0需要显示默认图片和加载状态, 1需要显示videoview, 2需要显示默认图片和重播按钮-->
+        <VideoView
+            android:id="@+id/video_preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
+
+        <!--<ImageView-->
+        <!--android:id="@+id/video_preview_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:visibility="@{status == -1 ||status==0?View.VISIBLE:View.GONE}" />-->
+
+        <ProgressBar
+            android:id="@+id/video_preview_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="@{status==0?View.VISIBLE:View.GONE}"/>
+
+        <ImageView
+            android:id="@+id/video_preview_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/video_reset"
+            android:visibility="@{status==2?View.VISIBLE:View.GONE}"/>
+
+        <LinearLayout
+            android:id="@+id/video_preview_linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#33000000">
+
+            <ImageView
+                android:id="@+id/video_preview_close_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/guan"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
