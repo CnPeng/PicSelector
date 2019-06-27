@@ -20,7 +20,7 @@ import com.cnpeng.piclib.compress.OnCompressListener;
 import com.cnpeng.piclib.config.PictureConfig;
 import com.cnpeng.piclib.config.PictureMimeType;
 import com.cnpeng.piclib.config.PictureSelectionConfig;
-import com.cnpeng.piclib.cropwidget.UCropMulti;
+import com.cnpeng.piclib.crop.UCropMulti;
 import com.cnpeng.piclib.dialog.PictureDialog;
 import com.cnpeng.piclib.entity.EventEntity;
 import com.cnpeng.piclib.entity.LocalMedia;
@@ -43,9 +43,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.cnpeng.piclib.cropwidget.UCropMulti.Options.EXTRA_DRAG_CROP_FRAME;
-import static com.cnpeng.piclib.cropwidget.UCropMulti.Options.EXTRA_ROTATE;
-import static com.cnpeng.piclib.cropwidget.UCropMulti.Options.EXTRA_SCALE;
+import static com.cnpeng.piclib.crop.UCropMulti.Options.EXTRA_DRAG_CROP_FRAME;
+import static com.cnpeng.piclib.crop.UCropMulti.Options.EXTRA_ROTATE;
+import static com.cnpeng.piclib.crop.UCropMulti.Options.EXTRA_SCALE;
 
 /**
  *
@@ -352,24 +352,6 @@ public class PictureBaseActivity extends FragmentActivity {
                 .withMaxResultSize(config.cropWidth, config.cropHeight)
                 .withOptions(options)
                 .start(this);
-    }
-
-    /**
-     * 判断拍照 图片是否旋转
-     */
-    protected void rotateImage(int degree, File file) {
-        if (degree > 0) {
-            // 针对相片有旋转问题的处理方式
-            try {
-                BitmapFactory.Options opts = new BitmapFactory.Options();//获取缩略图显示到屏幕上
-                opts.inSampleSize = 2;
-                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
-                Bitmap bmp = PictureFileUtils.rotaingImageView(degree, bitmap);
-                PictureFileUtils.saveBitmapFile(bmp, file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

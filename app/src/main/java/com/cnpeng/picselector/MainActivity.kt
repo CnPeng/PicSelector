@@ -1,7 +1,9 @@
 package com.cnpeng.picselector
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
@@ -73,10 +75,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         bt2.setOnClickListener {
-            TestHandler.openCamera(this, rxPermission, 666)
+            TestHandler.openCamera(this, rxPermission, 777)
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (null != data && resultCode == RESULT_OK && requestCode == 777) {
+            val picList = PictureSelector.obtainMultipleResult(data)
+            Log.d("拍照", picList[0].path)
+        }
+    }
 
     //    override fun onBackPressed() {
     //        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

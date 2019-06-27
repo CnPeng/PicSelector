@@ -1,6 +1,5 @@
 ## 后续将增加的内容
 
-* 增加外部页面直接调起拍照/录像功能，并把结果直接返回给调用者——不再通过 PictureSelector.obtainMuilt(data) 获取结果
 * 使用 implemention 的方式引用 RxPermissions
 
 ## 版权说明
@@ -14,6 +13,7 @@
 * 新增对大文件的过滤——maxSize()
 * 替换录制视频的组件
 * 替换大图预览框架，更好的兼容清明上河图等超大图
+* 增加图片最终路径的属性和对应的set/get——path，具体可查阅 LocalMedia 中的 getPath()
 
 大文件过滤的示例代码：
 

@@ -24,7 +24,7 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.cnpeng.piclib.cropwidget.PictureMultiCuttingActivity"
+            android:name="com.cnpeng.piclib.crop.PictureMultiCuttingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.cnpeng.piclib.antwidget.TitleActivity"

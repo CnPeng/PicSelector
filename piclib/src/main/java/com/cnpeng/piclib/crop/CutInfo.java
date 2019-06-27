@@ -1,4 +1,4 @@
-package com.cnpeng.piclib.cropwidget;
+package com.cnpeng.piclib.crop;
 
 import java.io.Serializable;
 

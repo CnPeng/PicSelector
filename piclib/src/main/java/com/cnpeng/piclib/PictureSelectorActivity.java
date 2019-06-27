@@ -36,8 +36,8 @@ import com.cnpeng.piclib.antwidget.CaptureButton;
 import com.cnpeng.piclib.antwidget.video.activity.RecordVideoActivity;
 import com.cnpeng.piclib.config.PictureConfig;
 import com.cnpeng.piclib.config.PictureMimeType;
-import com.cnpeng.piclib.cropwidget.CutInfo;
-import com.cnpeng.piclib.cropwidget.UCropMulti;
+import com.cnpeng.piclib.crop.CutInfo;
+import com.cnpeng.piclib.crop.UCropMulti;
 import com.cnpeng.piclib.decoration.GridSpacingItemDecoration;
 import com.cnpeng.piclib.dialog.CustomDialog;
 import com.cnpeng.piclib.entity.EventEntity;
@@ -105,12 +105,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     private LocalMediaLoader        mediaLoader;
     private MediaPlayer             mediaPlayer;
     private SeekBar                 musicSeekBar;
-    private CustomDialog            audioDialog;
-    private int                     audioH;
-    private PictureSelectorActivity mActivity;
-    private TextView                mShowAllPicTv;
-
-    public Runnable runnable = new Runnable() {
+    public  Runnable                runnable = new Runnable() {
         @Override
         public void run() {
             try {
@@ -126,9 +121,11 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
         }
     };
-
-
-    private Handler mHandler = new Handler() {
+    private CustomDialog            audioDialog;
+    private int                     audioH;
+    private PictureSelectorActivity mActivity;
+    private TextView                mShowAllPicTv;
+    private Handler                 mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -472,7 +469,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
         //                      PictureConfig.TYPE_ALL ? PictureConfig.TYPE_VIDEO : config.mimeType,
         //              outputCameraPath, config.suffixType);
         //      cameraPath = cameraFile.getAbsolutePath();
-        //      Uri imageUri = parUri(cameraFile);
+        //      Uri imageUri = parseUri(cameraFile);
         //      cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         //      cameraIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, config.recordVideoSecond);
         //      cameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, config.videoQuality);
@@ -972,8 +969,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
                     String toType = PictureMimeType.fileToType(file);
                     if (config.mimeType != PictureMimeType.ofAudio()) {
-                        int degree = PictureFileUtils.readPictureDegree(file.getAbsolutePath());
-                        rotateImage(degree, file);
+                        PictureFileUtils.checkAndRepairDegree(file);
                     }
                     // 生成新拍照片或视频对象
                     media = new LocalMedia();

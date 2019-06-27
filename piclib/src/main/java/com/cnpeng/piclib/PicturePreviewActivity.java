@@ -26,8 +26,8 @@ import com.cnpeng.piclib.tools.ToastManage;
 import com.cnpeng.piclib.tools.VoiceUtils;
 import com.cnpeng.piclib.widget.PreviewViewPager;
 import com.yalantis.ucrop.UCrop;
-import com.cnpeng.piclib.cropwidget.UCropMulti;
-import com.cnpeng.piclib.cropwidget.CutInfo;
+import com.cnpeng.piclib.crop.UCropMulti;
+import com.cnpeng.piclib.crop.CutInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -32,10 +32,7 @@ object TestHandler {
                             override fun onNext(t: Boolean) {
                                 if (t) {
                                     PictureSelector.create(pActivity)
-                                            .openGallery(PictureMimeType.ofImage())
-                                            .isCamera(true)
-                                            .maxSelectNum(6)
-                                            .imageSpanCount(3)
+                                            .openCamera(PictureMimeType.ofImage())
                                             .forResult(pRequestCode)
                                 } else {
                                     Toast.makeText(pActivity, "获取权限失败", Toast.LENGTH_SHORT).show()

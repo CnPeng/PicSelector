@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.cnpeng.piclib.cropwidget;
+package com.cnpeng.piclib.crop;
 
 import android.content.Context;
 import android.view.LayoutInflater;

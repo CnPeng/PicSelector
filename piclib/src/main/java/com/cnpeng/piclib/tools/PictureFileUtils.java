@@ -22,6 +22,8 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.cnpeng.piclib.config.PictureConfig;
 
 import java.io.BufferedOutputStream;
@@ -36,8 +38,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-
 /**
  * author：luck
  * project：PictureSelector
@@ -48,19 +48,12 @@ import androidx.annotation.NonNull;
 public class PictureFileUtils {
     private static String DEFAULT_CACHE_DIR = "picture_cache";
 
-    public static final String POSTFIX = ".JPEG";
-    public static final String POST_VIDEO = ".mp4";
-    public static final String APP_NAME = "PictureSelector";
+    public static final String POSTFIX     = ".JPEG";
+    public static final String POST_VIDEO  = ".mp4";
+    public static final String APP_NAME    = "PictureSelector";
     public static final String CAMERA_PATH = "/" + APP_NAME + "/CameraImage/";
-    public static final String CROP_PATH = "/" + APP_NAME + "/CropImage/";
+    public static final String CROP_PATH   = "/" + APP_NAME + "/CropImage/";
 
-    /**
-     * @param context
-     * @param type
-     * @param outputCameraPath
-     * @param format
-     * @return
-     */
     public static File createCameraFile(Context context, int type, String outputCameraPath, String format) {
         String path = !TextUtils.isEmpty(outputCameraPath)
                 ? outputCameraPath : CAMERA_PATH;
@@ -69,10 +62,15 @@ public class PictureFileUtils {
     }
 
     /**
-     * @param context
-     * @param type
-     * @param format
-     * @return
+     * CnPeng:2019-06-27 10:36
+     * 说明：创建拍照时的输出文件，使用默认路径，使用默认格式--JPEG
+     */
+    public static File createCameraFile(Context context) {
+        return createMediaFile(context, CAMERA_PATH, PictureConfig.TYPE_MEDIA_IMAGE, "");
+    }
+
+    /**
+     *
      */
     public static File createCropFile(Context context, int type, String format) {
         return createMediaFile(context, CROP_PATH, type, format);
@@ -116,7 +114,6 @@ public class PictureFileUtils {
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is ExternalStorageProvider.
-     * @author paulburke
      */
     public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
@@ -125,7 +122,6 @@ public class PictureFileUtils {
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is DownloadsProvider.
-     * @author paulburke
      */
     public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
@@ -134,7 +130,6 @@ public class PictureFileUtils {
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is MediaProvider.
-     * @author paulburke
      */
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
@@ -157,7 +152,6 @@ public class PictureFileUtils {
      * @param selection     (Optional) Filter used in the query.
      * @param selectionArgs (Optional) Selection arguments used in the query.
      * @return The value of the _data column, which is typically a file path.
-     * @author paulburke
      */
     public static String getDataColumn(Context context, Uri uri, String selection,
                                        String[] selectionArgs) {
@@ -218,7 +212,6 @@ public class PictureFileUtils {
      *
      * @param context The context.
      * @param uri     The Uri to query.
-     * @author paulburke
      */
     @SuppressLint("NewApi")
     public static String getPath(final Context context, final Uri uri) {
@@ -349,34 +342,37 @@ public class PictureFileUtils {
      * 读取图片属性：旋转的角度
      *
      * @param path 图片绝对路径
-     * @return degree旋转的角度
+     * @return degree 旋转的角度
      */
     public static int readPictureDegree(String path) {
         int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(path);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    degree = 90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    degree = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    degree = 270;
-                    break;
+        if (!TextUtils.isEmpty(path)) {
+            try {
+                ExifInterface exifInterface = new ExifInterface(path);
+                int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+                switch (orientation) {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        degree = 90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        degree = 180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        degree = 270;
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return degree;
     }
 
-    /*
+    /**
      * 旋转图片
-     * @param angle
-     * @param bitmap
+     *
      * @return Bitmap
      */
     public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
@@ -385,9 +381,39 @@ public class PictureFileUtils {
         matrix.postRotate(angle);
         System.out.println("angle2=" + angle);
         // 创建新的图片
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+        return Bitmap.createBitmap(bitmap, 0, 0,
                 bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizedBitmap;
+    }
+
+    /**
+     * CnPeng:2019-06-27 11:34 检查并修复图片的旋转角度
+     */
+    public static void checkAndRepairDegree(File pFile) {
+        if (null == pFile) {
+            return;
+        }
+
+        int degree = readPictureDegree(pFile.getAbsolutePath());
+        checkAndRepairDegree(degree, pFile);
+    }
+
+    /**
+     * 判断拍照 图片是否旋转
+     */
+    public static void checkAndRepairDegree(int pFegree, File pFile) {
+        if (null != pFile && pFegree > 0) {
+            // 针对相片有旋转问题的处理方式
+            try {
+                //获取缩略图显示到屏幕上
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeFile(pFile.getAbsolutePath(), opts);
+                Bitmap bmp = rotaingImageView(pFegree, bitmap);
+                saveBitmapFile(bmp, pFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void saveBitmapFile(Bitmap bitmap, File file) {
@@ -405,7 +431,6 @@ public class PictureFileUtils {
      * 转换图片成圆形
      *
      * @param bitmap 传入Bitmap对象
-     * @return
      */
     public static Bitmap toRoundBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
@@ -467,9 +492,6 @@ public class PictureFileUtils {
 
     /**
      * 创建文件夹
-     *
-     * @param filename
-     * @return
      */
     public static String createDir(Context context, String filename, String directory_path) {
         String state = Environment.getExternalStorageState();
@@ -493,9 +515,6 @@ public class PictureFileUtils {
 
     /**
      * image is Damage
-     *
-     * @param path
-     * @return
      */
     public static int isDamage(String path) {
         BitmapFactory.Options options = null;
@@ -514,8 +533,6 @@ public class PictureFileUtils {
 
     /**
      * 获取某目录下所有文件路径
-     *
-     * @param dir
      */
     public static List<String> getDirFiles(String dir) {
         File scanner5Directory = new File(dir);
@@ -547,8 +564,6 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
-     *
-     * @param mContext
      */
     public static void deleteCacheDirFile(Context mContext) {
         File cutDir = mContext.getCacheDir();
@@ -588,8 +603,6 @@ public class PictureFileUtils {
 
     /**
      * set empty PictureSelector Cache
-     *
-     * @param mContext
      */
     public static void deleteExternalCacheDirFile(Context mContext) {
 
@@ -631,8 +644,6 @@ public class PictureFileUtils {
 
     /**
      * delete file
-     *
-     * @param path
      */
     public static boolean deleteFile(String path) {
         try {
@@ -650,8 +661,7 @@ public class PictureFileUtils {
     }
 
     /**
-     * @param context
-     * @return
+     *
      */
     public static String getDiskCacheDir(Context context) {
         String cachePath = null;
