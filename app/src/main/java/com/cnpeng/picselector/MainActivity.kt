@@ -38,37 +38,12 @@ class MainActivity : AppCompatActivity() {
         //
 
         val rxPermission = RxPermissions(this)
-        bt.setOnClickListener {
-            //            rxPermission.request(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            //                    Manifest.permission.READ_EXTERNAL_STORAGE,
-            //                    Manifest.permission.CAMERA)
-            //                    .subscribe(object : Observer<Boolean> {
-            //                        override fun onSubscribe(d: Disposable) {
-            //                        }
-            //
-            //                        override fun onNext(t: Boolean) {
-            //                            if (t) {
-            //                                PictureSelector.create(this@MainActivity)
-            //                                        .openGallery(PictureMimeType.ofImage())
-            //                                        .enableCrop(true)
-            //                                        .isCamera(true)
-            //                                        .withAspectRatio(1, 1)
-            //                                        .imageSpanCount(3)
-            //                                        .maxSelectNum(6)
-            //                                        .forResult(666)
-            //                            }
-            //                        }
-            //
-            //                        override fun onError(e: Throwable) {
-            //                        }
-            //
-            //                        override fun onComplete() {
-            //
-            //                        }
-            //                    })
+        bt1.setOnClickListener {
+
             rxPermission.request(Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA)
+                    //CnPeng 2019-06-27 09:20 注意：subscribe 后面是小括号，不是大括号，如果用大括号不会触发重写的方法
                     .subscribe(
                             object : Observer<Boolean> {
                                 override fun onComplete() {
@@ -97,6 +72,9 @@ class MainActivity : AppCompatActivity() {
                     )
         }
 
+        bt2.setOnClickListener {
+            TestHandler.openCamera(this, rxPermission, 666)
+        }
     }
 
 
