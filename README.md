@@ -16,7 +16,7 @@
     - PictureMimeType.createImageType() 中只是根据后缀名取的 类型，不准确
 * 获取图片/视频的后缀名
 * 获取图片/视频的URI
-* 替换大图预览框架，更好的兼容清明上河图等超大图,并支持网络图片( ImagePagerAdapter /ImagePagerActivity2)
+
 
 
 ## 更新记录
@@ -34,8 +34,11 @@
 * 优化超过1小时视频的时长显示
 * 升级 Glide 为 4.9.0
 * 升级 gson 为 2.8.5 
+* 替换大图预览框架，更好的兼容清明上河图等超大图,并支持网络图片( ImagePagerAdapter /ImagePagerActivity2)
 
-大文件过滤的示例代码：
+### 新增API的使用示例
+
+#### (1)、大文件过滤的示例代码：
 
 ```java
  PictureSelector.create(mActivity)
@@ -51,6 +54,34 @@
             .forResult(CommKey.REQUEST_SELECT_PIC)            
 ```
 
+#### (2)、大图预览的使用示例
+
+* 网络图片的跳转方式
+
+```java
+ // 2018/6/4 下午4:42  跳转到大图查看界面
+ Intent intent = new Intent(context, ImagePagerActivity2.class);
+ ImagePreviewHolder2 previewHolder = ImagePreviewHolder2.getInstance();
+ // 标记是否是网络图片
+ previewHolder.setFromNet(true);
+ // mPosition 表示用户当前点击的图片索引。
+ previewHolder.setCurSelectedIndex(mPosition);
+ // netImageList 为 ImagePreviewBean 的集合, bean 中的 url 为完整网络路径
+ previewHolder.setImgList(netImageList);
+
+ startActivity(intent);
+```
+
+* 本地图片的跳转方式
+
+```java
+ Intent intent = new Intent(this, ImagePagerActivity2.class);
+ ImagePreviewHolder2 previewHolder = ImagePreviewHolder2.getInstance();
+ previewHolder.setFromNet(false);
+ previewHolder.setImgList2(mSelectedMediaList);
+ previewHolder.setCurSelectedIndex(position);
+ startActivity(intent);
+```
 
 ## 引用方式
 
