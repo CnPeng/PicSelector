@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="imgDesc"
+            type="String" />
+
+        <variable
+            name="curPosition"
+            type="Integer" />
+
+        <variable
+            name="totalSize"
+            type="Integer" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:hardwareAccelerated="false">
+
+        <com.cnpeng.piclib.widget.PreviewViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_ImgDescParent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#661d1d1d"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/tv_imgDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{imgDesc}"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:visibility="@{TextUtils.isEmpty(imgDesc)?View.GONE:View.VISIBLE}"
+                tools:text="这里是图片描述啊啊啊这里是图片描述啊啊啊这" />
+
+            <TextView
+                android:id="@+id/tv_imgIndex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text='@{curPosition+"/"+totalSize}'
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:text="1/6" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
