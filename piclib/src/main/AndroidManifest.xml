@@ -49,7 +49,9 @@
         <activity
             android:name="com.cnpeng.piclib.PicturePreviewActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".ImagePagerActivity2"
+            android:screenOrientation="portrait" />
 
         <!-- 解决API24 及以上版本调用系统相机时报：FileUriExposedException 的情况 -->
         <provider
