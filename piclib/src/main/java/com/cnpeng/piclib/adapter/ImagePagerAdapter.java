@@ -143,6 +143,7 @@ public class ImagePagerAdapter extends PagerAdapter {
             } else {
                 ImgPreviewBean img = mNetImages.get(position);
                 if (img != null) {
+                    imgUrl = img.getUrl();
                     Log.d(TAG, "图片地址:" + imgUrl);
 
                     //2018/6/7 上午9:18  完美：由于 RequestBuilder 的 downloadOnly 已被废弃，所以，根据建议使用 RequestManager中的
