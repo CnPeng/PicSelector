@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                                 override fun onNext(t: Boolean) {
                                     if (t) {
                                         PictureSelector.create(this@MainActivity)
-                                                .openGallery(PictureMimeType.ofImage())
+                                                .openGallery(PictureMimeType.ofVideo())
                                                 .isCamera(true)
                                                 .maxSelectNum(6)
                                                 .imageSpanCount(3)

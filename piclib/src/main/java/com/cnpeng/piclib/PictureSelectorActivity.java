@@ -763,38 +763,43 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     public void onTakePhoto() {
         // 启动相机拍照,先判断手机是否有拍照权限
-        rxPermissions.request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+        boolean selectVideo = config.mimeType == PictureMimeType.ofVideo();
 
-            }
+        String[] permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (selectVideo) {
+            permissionArray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+        }
 
-            @Override
-            public void onNext(Boolean aBoolean) {
-
-                Log.e("请求权限", aBoolean + "");
-
-                if (aBoolean) {
-                    startCamera();
-                } else {
-                    ToastManage.s(mContext, getString(R.string.picture_camera));
-                    if (config.camera) {
-                        closeActivity();
+        rxPermissions.request(permissionArray)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
                     }
-                }
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e("请求权限", e.getMessage());
-            }
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.e("请求权限", aBoolean + "");
 
-            @Override
-            public void onComplete() {
-                Log.e("请求权限", "onComplete");
+                        if (aBoolean) {
+                            startCamera();
+                        } else {
+                            ToastManage.s(mContext, getString(R.string.picture_camera));
+                            if (config.camera) {
+                                closeActivity();
+                            }
+                        }
+                    }
 
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("请求权限", e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("请求权限", "onComplete");
+                    }
+                });
     }
 
     @Override
@@ -968,7 +973,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                     final File file = new File(cameraPath);
                     sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
                     String toType = PictureMimeType.fileToType(file);
-                    if (config.mimeType != PictureMimeType.ofAudio()) {
+                    if (config.mimeType == PictureMimeType.ofImage()) {
                         PictureFileUtils.checkAndRepairDegree(file);
                     }
                     // 生成新拍照片或视频对象
