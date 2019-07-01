@@ -8,6 +8,7 @@
 ## 待处理的内容
 
 * 使用 implemention 的方式引用 RxPermissions
+* 使用 implemention 的方式引用 LuBan 压缩
 * [690 issue ](https://github.com/LuckSiege/PictureSelector/issues/690)
 * 调用自定义的拍照
 * 添加获取视频第一帧图片的通用方法

@@ -434,7 +434,7 @@ public final class PictureMimeType {
         int screenWidth = getScreenWidth(context);
         int screenHeight = getScreenHeight(context);
 
-        if (isLongWidthImg(bmpWidth, bmpHeight,context)) {
+        if (isLongWidthImg(bmpWidth, bmpHeight, context)) {
             //如果是超宽图——让图片高度占据屏幕的50%
             scale = 0.5f * screenHeight / bmpHeight;
         } else if (isLongHeightImg(bmpWidth, bmpHeight, context)) {
@@ -479,38 +479,38 @@ public final class PictureMimeType {
         return displayMetrics.heightPixels;
     }
 
-    //    /**
-    //     * 作者：CnPeng
-    //     * 时间：2018/6/7 上午9:57
-    //     * 功用：使用长图控件加载图片时，获取图片的最大缩放比率
-    //     * 说明：宽>=高，高>宽
-    //     */
-    //    public static float getMaxScaleRate(int bmpWidth, int bmpHeight) {
-    //        //        float scale = 0f;
-    //        //        int screenWidth = CommonUtils.getScreenWidth(AntLinkApplication.getAppContext());
-    //        //        int screenHeight = CommonUtils.getScreenHeight(AntLinkApplication.getAppContext());
-    //        //
-    //        //        if (bmpWidth > bmpHeight) {
-    //        //            //宽度大于高度，最大缩放为屏幕高度 1.1f
-    //        //            scale = 1.3f * screenHeight / bmpHeight;
-    //        //        } else if (bmpHeight >= bmpWidth) {
-    //        //            //高度大于等于宽度，最大缩放为最大宽度1.1f
-    //        //            scale = 1.3f * screenWidth / bmpWidth;
-    //        //        }
-    //        //        return scale;
-    //        return getScaleRate(bmpWidth, bmpHeight) * 3;
-    //    }
+    /**
+     * 作者：CnPeng
+     * 时间：2018/6/7 上午9:57
+     * 功用：使用长图控件加载图片时，获取图片的最大缩放比率
+     * 说明：宽>=高，高>宽
+     */
+    public static float getMaxScaleRate(int bmpWidth, int bmpHeight, Context context) {
+        //        float scale = 0f;
+        //        int screenWidth = CommonUtils.getScreenWidth(AntLinkApplication.getAppContext());
+        //        int screenHeight = CommonUtils.getScreenHeight(AntLinkApplication.getAppContext());
+        //
+        //        if (bmpWidth > bmpHeight) {
+        //            //宽度大于高度，最大缩放为屏幕高度 1.1f
+        //            scale = 1.3f * screenHeight / bmpHeight;
+        //        } else if (bmpHeight >= bmpWidth) {
+        //            //高度大于等于宽度，最大缩放为最大宽度1.1f
+        //            scale = 1.3f * screenWidth / bmpWidth;
+        //        }
+        //        return scale;
+        return getScaleRate(bmpWidth, bmpHeight, context) * 3;
+    }
 
-    //    /**
-    //     * 作者：CnPeng
-    //     * 时间：2018/6/7 上午9:57
-    //     * 功用：使用长图控件加载图片时，获取双击时的步进缩放比率
-    //     */
-    //    public static float getDoubleTapZoomScale(int bmpWidth, int bmpHeight) {
-    //        float maxScale = getMaxScaleRate(bmpWidth, bmpHeight);
-    //        float initScale = getScaleRate(bmpWidth, bmpHeight);
-    //        return (maxScale - initScale) * 0.75f;
-    //    }
+    /**
+     * 作者：CnPeng
+     * 时间：2018/6/7 上午9:57
+     * 功用：使用长图控件加载图片时，获取双击时的步进缩放比率
+     */
+    public static float getDoubleTapZoomScale(int bmpWidth, int bmpHeight, Context context) {
+        float maxScale = getMaxScaleRate(bmpWidth, bmpHeight, context);
+        float initScale = getScaleRate(bmpWidth, bmpHeight, context);
+        return (maxScale - initScale) * 0.75f;
+    }
 
 
 }
