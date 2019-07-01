@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
@@ -25,9 +29,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.ImageViewState;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.cnpeng.piclib.config.PictureConfig;
 import com.cnpeng.piclib.config.PictureMimeType;
 import com.cnpeng.piclib.dialog.CustomDialog;
@@ -39,6 +40,11 @@ import com.cnpeng.piclib.tools.PictureFileUtils;
 import com.cnpeng.piclib.tools.ScreenUtils;
 import com.cnpeng.piclib.tools.ToastManage;
 import com.cnpeng.piclib.widget.PreviewViewPager;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.ImageViewState;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -48,9 +54,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -64,11 +67,11 @@ import io.reactivex.disposables.Disposable;
  * // ATTENTION: 2018/6/7 上午10:38 这个页面是对外暴露的
  */
 public class PictureExternalPreviewActivity extends PictureBaseActivity implements View.OnClickListener {
-    private ImageButton      left_back;
-    private TextView         tv_title;
-    private PreviewViewPager viewPager;
-    private List<LocalMedia> images   = new ArrayList<>();
-    private int              position = 0;
+    private ImageButton           left_back;
+    private TextView              tv_title;
+    private PreviewViewPager      viewPager;
+    private List<LocalMedia>      images   = new ArrayList<>();
+    private int                   position = 0;
     private String                directory_path;
     private SimpleFragmentAdapter adapter;
     private LayoutInflater        inflater;
@@ -126,17 +129,18 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NotNull ViewGroup container, int position, @NotNull Object object) {
             (container).removeView((View) object);
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
+        public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
             return view == object;
         }
 
+        @NotNull
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(@NotNull ViewGroup container, int position) {
             // TODO: 2018/6/7 上午10:38 这里需要区分是网络图片还是本地图片，展示的逻辑是不一样的，参考 ImagePagerAdapter
             View contentView = inflater.inflate(R.layout.picture_image_preview, container, false);
             // 常规图控件
@@ -208,7 +212,7 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
                                 }
 
                                 @Override
-                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                public void onResourceReady(@NotNull Bitmap resource, Transition<? super Bitmap> transition) {
                                     dismissDialog();
                                     if (eqLongImg) {
                                         displayLongPic(resource, longImg);
@@ -272,9 +276,6 @@ public class PictureExternalPreviewActivity extends PictureBaseActivity implemen
 
     /**
      * 加载长图
-     *
-     * @param bmp
-     * @param longImg
      */
     private void displayLongPic(Bitmap bmp, SubsamplingScaleImageView longImg) {
         longImg.setQuickScaleEnabled(true);
