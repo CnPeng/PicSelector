@@ -3,6 +3,7 @@ package com.cnpeng.piclib.tools;
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,16 +22,24 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.cnpeng.piclib.antutils.MD5Util;
+import com.cnpeng.piclib.antutils.NetworkUtil;
+import com.cnpeng.piclib.antutils.ToastUtil;
 import com.cnpeng.piclib.config.PictureConfig;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,6 +106,8 @@ public class PictureFileUtils {
                 break;
             case PictureConfig.TYPE_MEDIA_VIDEO:
                 tmpFile = new File(folderDir, fileName + POST_VIDEO);
+                break;
+            default:
                 break;
         }
         return tmpFile;
@@ -333,8 +344,7 @@ public class PictureFileUtils {
             if (outputChannel != null) {
                 outputChannel.close();
             }
-            boolean success = PictureFileUtils.deleteFile(pathFrom);
-            return success;
+            return PictureFileUtils.deleteFile(pathFrom);
         }
     }
 
@@ -672,5 +682,112 @@ public class PictureFileUtils {
             cachePath = context.getCacheDir().getPath();
         }
         return cachePath;
+    }
+
+    /**
+     * CnPeng 2019-07-01 18:49 保存图片到本地
+     *
+     * @param imageUrl   图片地址
+     * @param folderName 目标文件夹名称，推荐使用APP名称——R.string.app_name
+     */
+    public static void saveBitmap(final Context context, final String imageUrl, String folderName) {
+        Log.i("PicTool", "被保存的图片地址是：" + imageUrl);
+        if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment.getExternalStorageState())) {
+
+            File dir = new File(Environment.getExternalStorageDirectory() + "/" + folderName + "/");
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            try {
+                String imageType = imageUrl.endsWith(".gif") || imageUrl.endsWith(".GIF") ? ".gif" : ".png";
+                final String saveName = Environment.getExternalStorageDirectory() + "/" + folderName + "/" + MD5Util.getMD5Str(imageUrl) + imageType;
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (NetworkUtil.isNetworkAvailable(context)) {
+                            try {
+                                getImage(context, imageUrl, saveName);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                ToastUtil.toastShort("保存失败！", context);
+                            }
+                        } else {
+                            ToastUtil.toastShort("保存失败！", context);
+                        }
+                    }
+                }).start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "保存失败，存储空间不可用！", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(context, "存储空间不可用！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * CnPeng:2019-07-01 18:49 保存图片到本地
+     */
+    public static void getImage(Context context, String path, String saveName) {
+
+        File file = new File(saveName);
+        if (file.exists()) {
+            ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), context);
+        } else {
+
+            // CnPeng 2018/6/13 下午8:56 外层用try catch 包裹，因为在VivoY51手机上，保存个图片都会OOM。。。
+            try {
+                URL url = new URL(path);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                con.setConnectTimeout(1000 * 10);
+                if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP || con.getResponseCode() ==
+                        HttpURLConnection.HTTP_MOVED_PERM) {
+                    path = con.getHeaderField("Location");
+                    url = new URL(path);
+                    con.disconnect();
+                    con = (HttpURLConnection) url.openConnection();
+                    con.setRequestMethod("GET");
+                    con.setConnectTimeout(1000 * 10);
+                }
+                if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                    InputStream inputStream = con.getInputStream();
+                    byte[] b = getByte(inputStream);
+                    //            File file = new File(saveName);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream.write(b);
+                    fileOutputStream.close();
+                    // 发一个系统广播通知手机有图片更，是用户可以在相册中查看。广播如下：
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(file);
+                    intent.setData(uri);
+                    context.sendBroadcast(intent);
+                    ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), context);
+                } else {
+                    ToastUtil.toastLong("保存失败：网络请求错误：" + con.getResponseCode(), context);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ToastUtil.toastShort("保存失败！", context);
+            }
+        }
+    }
+
+    /**
+     * CnPeng:2019-07-01 18:51 获取字节数组
+     */
+    private static byte[] getByte(InputStream inputStream) throws Exception {
+        byte[] b = new byte[1024];
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int len = -1;
+        while ((len = inputStream.read(b)) != -1) {
+            byteArrayOutputStream.write(b, 0, len);
+        }
+        byteArrayOutputStream.close();
+        inputStream.close();
+        return byteArrayOutputStream.toByteArray();
     }
 }
