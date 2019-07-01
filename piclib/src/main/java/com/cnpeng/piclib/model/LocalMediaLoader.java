@@ -209,39 +209,38 @@ public class LocalMediaLoader {
                 });
     }
 
-
     /**
      * 作者：CnPeng
      * 时间：2018/5/23 下午9:27
      * 功用：将获取到的多媒体数据存储到不同的集合中
-     * 说明：
+     *
+     * CnPeng 2019-07-01 14:24 将文件是否存在判断提前，文件不存在也不用再获取其他媒体信息了
      */
     private void setMediaToList(Cursor data, List<LocalMediaFolder> imageFolders, LocalMediaFolder allImageFolder, List<LocalMedia> latelyImages) {
         String path = data.getString(data.getColumnIndexOrThrow(PROJECTION[1]));
 
-        // CnPeng 2018/8/7 下午6:18 如果用户手动修改gif的后缀为.jpg, 原生的data.getColumnIndexOrThrow 获取的是 image/jpeg。而options中获取的则是准确的
-        String pictureType = "";
-        try {
-            pictureType = data.getString(data.getColumnIndexOrThrow(PROJECTION[2]));
+        if (isFileExist(path)) {
+            // CnPeng 2018/8/7 下午6:18 如果用户手动修改gif的后缀为.jpg, 原生的data.getColumnIndexOrThrow 获取的是 image/jpeg。而options中获取的则是准确的
+            String pictureType = "";
+            try {
+                pictureType = data.getString(data.getColumnIndexOrThrow(PROJECTION[2]));
 
-            if (PictureConfig.TYPE_MEDIA_IMAGE == PictureMimeType.isPictureType(pictureType)) {
-                //CnPeng 2018/8/15 下午5:47 如果是图片类型的才去获取真实的格式；如果是视频，不走这里，否则会返回null
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(path, options);
-                pictureType = options.outMimeType;
+                if (PictureConfig.TYPE_MEDIA_IMAGE == PictureMimeType.isPictureType(pictureType)) {
+                    //CnPeng 2018/8/15 下午5:47 如果是图片类型的才去获取真实的格式；如果是视频，不走这里，否则会返回null
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(path, options);
+                    pictureType = options.outMimeType;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        int w = data.getInt(data.getColumnIndexOrThrow(PROJECTION[3]));
-        int h = data.getInt(data.getColumnIndexOrThrow(PROJECTION[4]));
-        long fileLength = data.getLong(data.getColumnIndexOrThrow(PROJECTION[5]));
-        int duration = data.getInt(data.getColumnIndexOrThrow(PROJECTION[6]));
-
-        if (isFileExist(path)) {
+            int w = data.getInt(data.getColumnIndexOrThrow(PROJECTION[3]));
+            int h = data.getInt(data.getColumnIndexOrThrow(PROJECTION[4]));
+            long fileLength = data.getLong(data.getColumnIndexOrThrow(PROJECTION[5]));
+            int duration = data.getInt(data.getColumnIndexOrThrow(PROJECTION[6]));
 
             LocalMedia image = new LocalMedia(path, duration, type, pictureType, w, h, fileLength);
 
