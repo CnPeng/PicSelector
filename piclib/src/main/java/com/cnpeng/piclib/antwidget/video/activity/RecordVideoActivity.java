@@ -25,7 +25,6 @@ import com.cnpeng.piclib.antwidget.TitleActivity;
  */
 
 public class RecordVideoActivity extends TitleActivity {
-
     /**
      * //拍照按钮的模式：拍照、拍照+录像
      */
@@ -42,11 +41,12 @@ public class RecordVideoActivity extends TitleActivity {
         //没有标题
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //设置全屏
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
-                .FLAG_FULLSCREEN);
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                , WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //设置竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+
         setContentView(R.layout.record_video);
 
         mFrom = getIntent().getStringExtra("FROM");

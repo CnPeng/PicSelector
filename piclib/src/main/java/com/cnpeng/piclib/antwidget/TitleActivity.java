@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.cnpeng.piclib.antutils.ActivitiesCollector;
 import com.cnpeng.piclib.antutils.ActivitiesOnResumeCollector;
@@ -21,7 +22,7 @@ import com.cnpeng.piclib.antutils.NetworkUtil;
  * 说明：
  * 2018/4/23 下午5:21  CnPeng 增加网络变化的广播监听
  */
-public class TitleActivity extends AppCompatActivity {
+public class TitleActivity extends FragmentActivity {
 
     /**
      * 作者：CnPeng
