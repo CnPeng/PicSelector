@@ -40,7 +40,6 @@
     <string name="picture_video_error">视频已损坏</string>
     <string name="picture_audio_error">音频已损坏</string>
     <string name="picture_confirm">确定</string>
-    <string name="app_name">picLib</string>
     <string name="hint_no_net">网络异常，请检查网络</string>
     <string name="picCrop">图片裁剪</string>
 </resources>
