@@ -100,7 +100,7 @@ Step 2. Add the dependency
 
 ```xml
 	dependencies {
-	        implementation 'com.github.CnPeng:PicSelector:V1.0.4'
+	        implementation 'com.github.CnPeng:PicSelector:t1.0.1'
 	}
 ```
 
