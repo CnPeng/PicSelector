@@ -1,11 +1,11 @@
-## 前言
+## 一、 前言
 
 该库是基于 [LuckSiege/PictureSelector 2.2.3 版本](https://github.com/LuckSiege/PictureSelector/releases) 修改的图片选择框架，其中的内容根据我厂的实际需求做了定制化，目前已经应用到生产环境。
 
 在定制时也引入或者拷贝了其他开源项目中的内容，部分来源已经不可考，所以不再一一列举。 
 
 
-## 待处理的内容
+## 二、待处理的内容
 
 * 使用 implemention 的方式引用 RxPermissions
 * 使用 implemention 的方式引用 LuBan 压缩
@@ -16,13 +16,19 @@
     - PictureMimeType.createImageType() 中只是根据后缀名取的 类型，不准确
 * 获取图片/视频的后缀名
 * 获取图片/视频的URI
+* 只拍照时，点击时不请求权限，而是跳转到 PictureSelectorActivity 界面再去请求权限，会出现两次本地存储权限的请求（临时规避方案是在点击按钮时请求权限）
+* 大图预览时校正图片方向
 
 
 
-## 更新记录
+## 三、更新记录
+
+### 1、2019-07-02 
+
+* 拍照不请求录音权限
 
 
-### 2019-06-27
+### 2、2019-06-27
 
 * 迁移到 androidX 
 * 引用 UCrop 的方式不再使用 module, 而是用 implemention
@@ -36,7 +42,7 @@
 * 升级 gson 为 2.8.5 
 * 替换大图预览框架，更好的兼容清明上河图等超大图,并支持网络图片( ImagePagerAdapter /ImagePagerActivity2)
 
-### 新增API的使用示例
+**新增API的使用示例如下：**
 
 #### (1)、大文件过滤的示例代码：
 
@@ -83,7 +89,7 @@
  startActivity(intent);
 ```
 
-## 引用方式
+## 四、引用方式
 
 Add it in your root build.gradle at the end of repositories:
 
@@ -118,7 +124,7 @@ android{
 
 ---
 
-## 以下为 PictureSelector 原项目的API 
+以下为 PictureSelector 原项目的API 
 
 ### 目录
 
@@ -136,7 +142,7 @@ android{
 -[演示效果](#演示效果)<br>
 -[打赏](#打赏)<br>
 
-## 功能特点
+## 五、功能特点
 
 * 1.适配android6.0+系统
 * 2.解决部分机型裁剪闪退问题

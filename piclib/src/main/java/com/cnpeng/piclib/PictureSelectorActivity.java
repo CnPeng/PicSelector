@@ -176,6 +176,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity = this;
+
         if (!RxBus.getDefault().isRegistered(this)) {
             RxBus.getDefault().register(this);
         }
@@ -215,8 +217,6 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             setContentView(R.layout.picture_selector);
             initView(savedInstanceState);
         }
-
-        mActivity = this;
     }
 
     @Override
