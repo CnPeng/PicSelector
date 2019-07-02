@@ -32,7 +32,7 @@
             android:name="com.cnpeng.piclib.antwidget.TitleActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.cnpeng.piclib.antwidget.video.activity.VideoPreviewActivity"
+            android:name=".antwidget.video.activity.VideoPreviewActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.cnpeng.piclib.PictureBaseActivity"
