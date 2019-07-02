@@ -17,7 +17,7 @@ import androidx.databinding.DataBindingUtil;
 import com.cnpeng.piclib.R;
 import com.cnpeng.piclib.antutils.NetworkUtil;
 import com.cnpeng.piclib.antwidget.TitleActivity;
-import com.cnpeng.piclib.databinding.VideoPreviewBinding;
+import com.cnpeng.piclib.databinding.ActivityVideoPreviewBinding;
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
 
@@ -32,13 +32,13 @@ import java.net.URL;
  * status -1是初始化,0是加载中,1是播放中,2是播放完成 -1只需要显示默认图片 0需要显示默认图片和加载状态, 1需要显示videoview, 2需要重播按钮
  */
 public class VideoPreviewActivity extends TitleActivity implements CacheListener {
-    private String              videoUrl;
-    private VideoPreviewBinding binding;
-    private VideoView           videoView;
+    private String                      videoUrl;
+    private ActivityVideoPreviewBinding binding;
+    private VideoView                   videoView;
     /**
      * //0和1 本地和网络
      */
-    private String              from;
+    private String                      from;
 
     private HttpProxyCacheServer mProxyCacheServer;
 
@@ -53,7 +53,7 @@ public class VideoPreviewActivity extends TitleActivity implements CacheListener
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //设置竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        binding = DataBindingUtil.setContentView(this, R.layout.video_preview);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_video_preview);
         videoView = (VideoView) findViewById(R.id.video_preview_view);
 
         //        AntLinkApplication.getProxy(context)
