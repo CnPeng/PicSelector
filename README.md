@@ -18,6 +18,8 @@
 * 获取图片/视频的URI
 * 只拍照时，点击时不请求权限，而是跳转到 PictureSelectorActivity 界面再去请求权限，会出现两次本地存储权限的请求（临时规避方案是在点击按钮时请求权限）
 * 大图预览时校正图片方向
+* VideoPreviewActivity 界面中，将 From 和 VideoUrl 抽取成通用关键字，方便外部调用
+* 干掉 lib 库中的 Databinding 代码（否则，引用方也需要启用 DataBinding）
 
 
 
@@ -106,7 +108,7 @@ Step 2. Add the dependency
 
 ```xml
 	dependencies {
-	        implementation 'com.github.CnPeng:PicSelector:t1.0.1'
+	        implementation 'com.github.CnPeng:PicSelector:t0.0.4'
 	}
 ```
 
