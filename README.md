@@ -91,7 +91,9 @@
  startActivity(intent);
 ```
 
-## 四、引用方式
+## 四、引用方式及注意事项
+
+### 1、引用方式
 
 Add it in your root build.gradle at the end of repositories:
 
@@ -112,6 +114,10 @@ Step 2. Add the dependency
 	}
 ```
 
+### 2、注意事项
+
+#### （1）、指定JAVA 版本
+
 由于使用了 java 1.8 ,所以，需要在 module 的 build.gradle 的 android 节点下声明 java 版本
 
 ```xml
@@ -123,6 +129,15 @@ android{
     }
 }
 ```
+
+#### (2)、使用 ViewPreviewActivity 播放在线视频
+
+如果使用 ViewPreviewActivity 播放在线视频，则需要在 module 的 build.gradle 中添加视频缓存的依赖项：
+
+```xml
+implementation 'com.danikula:videocache:2.7.1'
+```
+
 
 ---
 
