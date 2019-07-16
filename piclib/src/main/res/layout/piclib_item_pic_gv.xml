@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="drawableID"
+            type="int" />
+
+        <variable
+            name="picUrl"
+            type="String" />
+    </data>
+
+    <com.cnpeng.piclib.widget.SquareRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ucrop_color_grey">
+
+        <!-- app:drawableId="@{drawableID}"
+            app:imageUrl="@{picUrl}"-->
+        <ImageView
+            android:id="@+id/iv_pic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
+            tools:layout_height="90dp"
+            tools:layout_width="90dp"
+            tools:src="@android:drawable/ic_menu_camera" />
+
+        <ImageView
+            android:id="@+id/iv_delPic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/iv_pic"
+            android:padding="5dp"
+            android:src="@drawable/ucrop_ic_delete_photo"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </com.cnpeng.piclib.widget.SquareRelativeLayout>
+
+</layout>

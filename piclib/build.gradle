@@ -66,4 +66,6 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.1'
     //CnPeng 2019-06-25 11:45 图片裁剪
     implementation 'com.github.yalantis:ucrop:2.2.3'
+    implementation "org.jetbrains.anko:anko-common:0.10.7"
+
 }
