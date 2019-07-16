@@ -58,8 +58,8 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
     implementation "com.github.bumptech.glide:okhttp3-integration:4.9.0"
     //CnPeng 2018/9/26 下午8:38 这两行是为了解决 https://github.com/bumptech/glide/issues/3185 ——Glide 中的注解还没有完全兼容androidx
-    implementation 'com.android.support:support-annotations:28.0.0'
-    annotationProcessor 'com.android.support:support-annotations:28.0.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    annotationProcessor 'androidx.annotation:annotation:1.1.0'
     //大图加载框架。—— 不支持动图
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     //CnPeng 2019-06-24 18:15 视频缓存
