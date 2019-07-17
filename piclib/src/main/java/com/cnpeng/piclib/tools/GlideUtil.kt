@@ -1,5 +1,6 @@
 package com.cnpeng.piclib.tools
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
@@ -10,7 +11,7 @@ import com.cnpeng.piclib.R
 
 /**
  * CnPeng 2019-07-16
- * 功用：
+ * 功用：Glide 加载工具
  * 其他：
  */
 object GlideUtil {
@@ -23,10 +24,10 @@ object GlideUtil {
      * 2、由于 @BindingAdapter 中 requireAll=false 表示在布局文件中为 ImageView 引用这些属性时可以只传递部分内容
      */
     fun loadImage(iv: ImageView,
-                  imageUrl: String?,
+                  imageUrl: String = "",
+                  uri: Uri? = null,
                   @DrawableRes drawableId: Int = 0,
                   @DrawableRes defaultDrawableID: Int = R.drawable.ic_placeholder) {
-
 
         val options = RequestOptions()
                 .error(defaultDrawableID)
@@ -36,8 +37,8 @@ object GlideUtil {
 
         Glide.with(iv)
                 .load(
-                        if (imageUrl.isNullOrEmpty()) {
-                            if (0 == drawableId) {
+                        if (imageUrl.isEmpty()) {
+                            uri ?: if (0 == drawableId) {
                                 defaultDrawableID
                             } else {
                                 drawableId
