@@ -31,6 +31,7 @@ object TestHandler {
                 .openGallery(PictureMimeType.ofImage())
                 .isCamera(false)
                 .maxSelectNum(1)
+                //                .openCamera(PictureMimeType.ofImage())
                 .enableCrop(true)
                 .forResult(pRequestCode)
         //                                } else {
