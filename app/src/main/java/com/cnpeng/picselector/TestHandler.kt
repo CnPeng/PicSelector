@@ -28,7 +28,10 @@ object TestHandler {
         //                            override fun onNext(t: Boolean) {
         //                                if (t) {
         PictureSelector.create(pActivity)
-                .openCamera(PictureMimeType.ofImage())
+                .openGallery(PictureMimeType.ofImage())
+                .isCamera(false)
+                .maxSelectNum(1)
+                .enableCrop(true)
                 .forResult(pRequestCode)
         //                                } else {
         //                                    Toast.makeText(pActivity, "获取权限失败", Toast.LENGTH_SHORT).show()
