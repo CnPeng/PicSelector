@@ -29,6 +29,7 @@ object TestHandler {
         //                                if (t) {
         PictureSelector.create(pActivity)
                 .openCamera(PictureMimeType.ofImage())
+                .enableCrop(true)
                 .forResult(pRequestCode)
         //                                } else {
         //                                    Toast.makeText(pActivity, "获取权限失败", Toast.LENGTH_SHORT).show()
