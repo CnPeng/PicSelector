@@ -380,8 +380,12 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        // Set all of the Toolbar coloring
-        toolbar.setBackgroundColor(mToolbarColor);
+        //        // Set all of the Toolbar coloring
+        /*
+         * CnPeng 2019-07-22 21:41 此处加上背景之后，裁剪页面的ToolBar 会有灰色背景，导致标题和裁剪按钮不清晰
+         * 大概是因为引用了 UCrop 中的私有资源
+        //                toolbar.setBackgroundColor(mToolbarColor);
+        */
         toolbar.setTitleTextColor(mToolbarWidgetColor);
 
         final TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -394,6 +398,7 @@ public class PictureMultiCuttingActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(stateButtonDrawable);
 
         setSupportActionBar(toolbar);
+
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
