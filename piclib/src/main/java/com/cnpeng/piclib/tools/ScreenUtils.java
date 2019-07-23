@@ -30,9 +30,17 @@ public class ScreenUtils {
         return localDisplayMetrics.heightPixels - getStatusBarHeight(context);
     }
 
+    /**
+     * CnPeng:2019-07-23 11:34 获取完整的高度，包括状态栏、底部虚拟导航栏
+     *
+     * 参考链接：https://blog.csdn.net/Kikitious_Du/article/details/78584326
+     * getRealMetrics(metric) 得到的是包含底部导航和状态栏的完整屏幕高度
+     * getMetrics(metric) 得到的是不包含底部虚拟导航栏的高度
+     * 上述两个函数中的 metric.heightPixels 相减就能得到底部虚拟导航的高度
+     */
     public static int getFullScreenHeight(Context context) {
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-//        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        //        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         ((Activity) context).getWindowManager().getDefaultDisplay().getRealMetrics(localDisplayMetrics);
         return localDisplayMetrics.heightPixels;
     }
