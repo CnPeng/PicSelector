@@ -296,10 +296,9 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
 
                 rl_bottom.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                // CnPeng 2018/9/5 下午1:57 让pop向上便宜一个底部栏的高度
-                int offsetY = rl_bottom.getMeasuredHeight();
-                int screenHeight = ScreenUtils.getScreenHeight(mActivity);
-                ViewGroup.LayoutParams la = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenHeight - offsetY);
+                //CnPeng 2019-07-23 11:25 修复虚拟导航遮挡弹窗的问题
+                int btmTop = rl_bottom.getTop();
+                ViewGroup.LayoutParams la = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, btmTop);
                 mFolderPopWindow = new FolderPopWindow(mActivity, config.mimeType, la);
                 mFolderPopWindow.setTvToNotify(mShowAllPicTv);
                 mFolderPopWindow.setOnItemClickListener(mActivity);
@@ -557,8 +556,12 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mFolderPopWindow.dismiss();
             } else {
                 if (images != null && images.size() > 0) {
-                    int yOffset = findViewById(R.id.rl_bottom).getHeight();
-                    mFolderPopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.BOTTOM, 0, yOffset);
+
+                    //CnPeng 2019-07-23 11:25 修复虚拟导航遮挡弹窗的问题
+                    int btmTop = findViewById(R.id.rl_bottom).getTop();
+                    int screenHeight = ScreenUtils.getFullScreenHeight(mActivity);
+
+                    mFolderPopWindow.showAtLocation(findViewById(R.id.rl_root), Gravity.BOTTOM, 0, screenHeight - btmTop);
                     List<LocalMedia> selectedImages = mAdapter.getSelectedImages();
                     mFolderPopWindow.notifyDataCheckedStatus(selectedImages);
                 }

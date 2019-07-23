@@ -10,11 +10,16 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cnpeng.piclib.R;
 import com.cnpeng.piclib.adapter.PictureAlbumDirectoryAdapter;
@@ -26,10 +31,6 @@ import com.cnpeng.piclib.tools.ScreenUtils;
 import com.cnpeng.piclib.tools.StringUtils;
 
 import java.util.List;
-
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * author：luck
@@ -44,7 +45,7 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private RecyclerView                 recyclerView;
     private PictureAlbumDirectoryAdapter adapter;
     private Animation                    animationIn, animationOut;
-    private boolean isDismiss = false;
+    private boolean      isDismiss = false;
     private LinearLayout id_ll_root;
     private TextView     mTvToNotify;
     private Drawable     drawableUp, drawableDown;
@@ -86,6 +87,8 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(adapter);
         id_ll_root.setOnClickListener(this);
+
+        setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     public void bindFolder(List<LocalMediaFolder> folders) {
@@ -109,6 +112,9 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
                 int h = anchor.getResources().getDisplayMetrics().heightPixels - rect.bottom;
                 setHeight(h);
             }
+            //CnPeng 2019-07-23 08:56 防止软键盘遮挡内容
+            // setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
             super.showAsDropDown(anchor);
             isDismiss = false;
             recyclerView.startAnimation(animationIn);
@@ -120,7 +126,10 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
 
     @Override
     public void showAtLocation(View parent, int gravity, int x, int y) {
+        //CnPeng 2019-07-23 08:55  //防止软键盘遮挡内容
+
         super.showAtLocation(parent, gravity, x, y);
+
         StringUtils.modifyTextViewDrawable(mTvToNotify, drawableUp, 2);
         recyclerView.startAnimation(animationIn);
     }

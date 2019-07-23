@@ -21,7 +21,7 @@
 
         <activity
             android:name="com.cnpeng.piclib.PictureSelectorActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.cnpeng.piclib.antwidget.video.activity.RecordVideoActivity"
