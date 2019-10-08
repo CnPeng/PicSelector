@@ -44,12 +44,12 @@ public class FolderPopWindow extends PopupWindow implements View.OnClickListener
     private View                         window;
     private RecyclerView                 recyclerView;
     private PictureAlbumDirectoryAdapter adapter;
-    private Animation                    animationIn, animationOut;
-    private boolean      isDismiss = false;
-    private LinearLayout id_ll_root;
-    private TextView     mTvToNotify;
-    private Drawable     drawableUp, drawableDown;
-    private int mimeType;
+    private boolean                      isDismiss = false;
+    private LinearLayout                 id_ll_root;
+    private TextView                     mTvToNotify;
+    private int                          mimeType;
+    private Drawable                     drawableUp, drawableDown;
+    private Animation animationIn, animationOut;
 
     public FolderPopWindow(Context context, int mimeType, ViewGroup.LayoutParams layoutParams) {
         this.context = context;

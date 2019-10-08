@@ -3,6 +3,8 @@ package com.cnpeng.piclib.config;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.StyleRes;
+
 import com.cnpeng.piclib.R;
 import com.cnpeng.piclib.RecordVideoListener;
 import com.cnpeng.piclib.entity.LocalMedia;
@@ -10,8 +12,6 @@ import com.cnpeng.piclib.tools.PictureFileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.StyleRes;
 
 /**
  * author：luck
@@ -32,53 +32,61 @@ public final class PictureSelectionConfig implements Parcelable {
             return new PictureSelectionConfig[size];
         }
     };
-    public int mimeType;
-    public boolean camera;
-    public String outputCameraPath;
-    public String compressSavePath;
-    public String suffixType;
+    public              int                             mimeType;
+    public              boolean                         camera;
+    public              String                          outputCameraPath;
+    public              String                          compressSavePath;
+    public              String                          suffixType;
     @StyleRes
-    public int themeStyleId;
-    public int selectionMode;
-    public int maxSelectNum;
-    public int minSelectNum;
-    public int videoQuality;
-    public int cropCompressQuality;
-    public int videoMaxSecond;
-    public int videoMinSecond;
-    public int recordVideoSecond;
-    public int minimumCompressSize;
-    public int imageSpanCount;
-    public int overrideWidth;
-    public int overrideHeight;
-    public int aspect_ratio_x;
-    public int aspect_ratio_y;
-    public float sizeMultiplier;
-    public int cropWidth;
-    public int cropHeight;
-    public boolean zoomAnim;
-    public boolean isCompress;
-    public boolean isCamera;
-    public boolean isGif;
-    public boolean enablePreview;
-    public boolean enPreviewVideo;
-    public boolean             enablePreviewAudio;
-    public boolean             checkNumMode;
-    public boolean             openClickSound;
-    public boolean             enableCrop;
-    public boolean             freeStyleCropEnabled;
-    public boolean             circleDimmedLayer;
-    public boolean             showCropFrame;
-    public boolean             showCropGrid;
-    public boolean             hideBottomControls;
-    public boolean             rotateEnabled;
-    public boolean             scaleEnabled;
-    public boolean             previewEggs;
-    public boolean             synOrAsy;
-    public boolean             isDragFrame;
-    public long                maxSize;
-    public List<LocalMedia>    selectionMedias;
-    public RecordVideoListener recordVideoListene;
+    public              int                             themeStyleId;
+    public              int                             selectionMode;
+    public              int                             maxSelectNum;
+    public              int                             minSelectNum;
+    public              int                             videoQuality;
+    public              int                             cropCompressQuality;
+    public              int                             videoMaxSecond;
+    public              int                             videoMinSecond;
+    public              int                             recordVideoSecond;
+    public              int                             minimumCompressSize;
+    public              int                             imageSpanCount;
+    public              int                             overrideWidth;
+    public              int                             overrideHeight;
+    public              int                             aspect_ratio_x;
+    public              int                             aspect_ratio_y;
+    public              float                           sizeMultiplier;
+    public              int                             cropWidth;
+    public              int                             cropHeight;
+    public              boolean                         zoomAnim;
+    public              boolean                         isCompress;
+    public              boolean                         isCamera;
+    public              boolean                         isGif;
+    public              boolean                         enablePreview;
+    public              boolean                         enPreviewVideo;
+    public              boolean                         enablePreviewAudio;
+    public              boolean                         checkNumMode;
+    public              boolean                         openClickSound;
+    public              boolean                         enableCrop;
+    public              boolean                         freeStyleCropEnabled;
+    public              boolean                         circleDimmedLayer;
+    public              boolean                         showCropFrame;
+    public              boolean                         showCropGrid;
+    public              boolean                         hideBottomControls;
+    public              boolean                         rotateEnabled;
+    public              boolean                         scaleEnabled;
+    public              boolean                         previewEggs;
+    public              boolean                         synOrAsy;
+    public              boolean                         isDragFrame;
+    public              long                            maxSize;
+    public              List<LocalMedia>                selectionMedias;
+    /**
+     * CnPeng:2019-10-08 15:49 图片的最小高度值，低于该高度不显示
+     */
+    public              int                             minPicHeight;
+    /**
+     * CnPeng:2019-10-08 15:49 图片的最小宽度值，低于该宽度不显示
+     */
+    public              int                             minPicWidth;
+    public              RecordVideoListener             recordVideoListener;
 
     public PictureSelectionConfig() {
     }
@@ -129,6 +137,8 @@ public final class PictureSelectionConfig implements Parcelable {
         this.isDragFrame = in.readByte() != 0;
         this.selectionMedias = in.createTypedArrayList(LocalMedia.CREATOR);
         this.maxSize = in.readLong();
+        this.minPicHeight = in.readInt();
+        this.minPicWidth = in.readInt();
     }
 
     public static PictureSelectionConfig getInstance() {
@@ -189,6 +199,8 @@ public final class PictureSelectionConfig implements Parcelable {
         suffixType = PictureFileUtils.POSTFIX;
         sizeMultiplier = 0.5f;
         selectionMedias = new ArrayList<>();
+        minPicHeight = 0;
+        minPicWidth = 0;
     }
 
     @Override
@@ -243,6 +255,8 @@ public final class PictureSelectionConfig implements Parcelable {
         dest.writeByte(this.isDragFrame ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.selectionMedias);
         dest.writeLong(this.maxSize);
+        dest.writeInt(this.minPicHeight);
+        dest.writeInt(this.minPicWidth);
     }
 
     private static final class InstanceHolder {

@@ -304,7 +304,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                 mFolderPopWindow.setOnItemClickListener(mActivity);
 
                 //由于 ReadLocalMedia 完成之后会将文件夹数据绑定到mFolderPopWindow，所以，必须保证创建了pop后再去取本地数据
-                mediaLoader = new LocalMediaLoader(mActivity, config.mimeType, config.isGif, config.videoMaxSecond, config.videoMinSecond);
+                mediaLoader = new LocalMediaLoader(mActivity, config);
                 rxPermissions.request(Manifest.permission.READ_EXTERNAL_STORAGE)
                         .subscribe(new Observer<Boolean>() {
                             @Override
@@ -597,8 +597,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
             }
             if (config.enableCrop && eqImg) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
-                    originalPath = image.getOriginalPath();
-                    startCrop(originalPath);
+                    mOriginalPath = image.getOriginalPath();
+                    startCrop(mOriginalPath);
                 } else {
                     // 是图片和选择压缩并且是多张，调用批量压缩
                     ArrayList<String> medias1 = new ArrayList<>();
@@ -922,8 +922,8 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         List<LocalMedia> mediaList = mAdapter.getSelectedImages();
                         media = mediaList != null && mediaList.size() > 0 ? mediaList.get(0) : null;
                         if (media != null) {
-                            originalPath = media.getOriginalPath();
-                            media = new LocalMedia(originalPath, media.getDuration(), false,
+                            mOriginalPath = media.getOriginalPath();
+                            media = new LocalMedia(mOriginalPath, media.getDuration(), false,
                                     media.getPosition(), media.getNum(), config.mimeType);
                             media.setCutPath(cutPath);
                             media.setCut(true);
@@ -1010,7 +1010,7 @@ public class PictureSelectorActivity extends PictureBaseActivity implements View
                         boolean eqImg = toType.startsWith(PictureConfig.IMAGE);
                         if (config.enableCrop && eqImg) {
                             // 去裁剪
-                            originalPath = cameraPath;
+                            mOriginalPath = cameraPath;
                             startCrop(cameraPath);
                         } else if (config.isCompress && eqImg) {
                             // 去压缩

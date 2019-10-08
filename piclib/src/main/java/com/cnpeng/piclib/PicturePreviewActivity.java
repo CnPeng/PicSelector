@@ -476,8 +476,8 @@ public class PicturePreviewActivity extends PictureBaseActivity implements
             }
             if (config.enableCrop && pictureType.startsWith(PictureConfig.IMAGE)) {
                 if (config.selectionMode == PictureConfig.SINGLE) {
-                    originalPath = image.getOriginalPath();
-                    startCrop(originalPath);
+                    mOriginalPath = image.getOriginalPath();
+                    startCrop(mOriginalPath);
                 } else {
                     // 是图片和选择压缩并且是多张，调用批量压缩
                     ArrayList<String> cuts = new ArrayList<>();

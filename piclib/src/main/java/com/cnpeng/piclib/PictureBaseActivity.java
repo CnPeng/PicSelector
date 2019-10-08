@@ -4,8 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,13 +51,13 @@ import static com.cnpeng.piclib.crop.UCropMulti.Options.EXTRA_SCALE;
 public class PictureBaseActivity extends FragmentActivity {
     protected Context                mContext;
     protected PictureSelectionConfig config;
-    protected boolean                openWhiteStatusBar, numComplete;
-    protected int colorPrimary, colorPrimaryDark;
+    protected String                 mOriginalPath;
+    protected PictureDialog          dialog;
+    protected PictureDialog          compressDialog;
+    protected List<LocalMedia>       selectionMedias;
+    protected int                    colorPrimary, colorPrimaryDark;
     protected String cameraPath, outputCameraPath;
-    protected String           originalPath;
-    protected PictureDialog    dialog;
-    protected PictureDialog    compressDialog;
-    protected List<LocalMedia> selectionMedias;
+    protected boolean openWhiteStatusBar, numComplete;
 
     /**
      * 是否使用沉浸式，子类复写该方法来确定是否采用沉浸式
@@ -86,7 +84,7 @@ public class PictureBaseActivity extends FragmentActivity {
         if (savedInstanceState != null) {
             config = savedInstanceState.getParcelable(PictureConfig.EXTRA_CONFIG);
             cameraPath = savedInstanceState.getString(PictureConfig.BUNDLE_CAMERA_PATH);
-            originalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
+            mOriginalPath = savedInstanceState.getString(PictureConfig.BUNDLE_ORIGINAL_PATH);
         } else {
             config = PictureSelectionConfig.getInstance();
         }
@@ -111,7 +109,7 @@ public class PictureBaseActivity extends FragmentActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(PictureConfig.BUNDLE_CAMERA_PATH, cameraPath);
-        outState.putString(PictureConfig.BUNDLE_ORIGINAL_PATH, originalPath);
+        outState.putString(PictureConfig.BUNDLE_ORIGINAL_PATH, mOriginalPath);
         outState.putParcelable(PictureConfig.EXTRA_CONFIG, config);
     }
 

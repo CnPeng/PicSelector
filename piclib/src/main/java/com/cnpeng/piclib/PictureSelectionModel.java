@@ -3,17 +3,17 @@ package com.cnpeng.piclib;
 import android.app.Activity;
 import android.content.Intent;
 
+import androidx.annotation.FloatRange;
+import androidx.annotation.IntRange;
+import androidx.annotation.StyleRes;
+import androidx.fragment.app.Fragment;
+
 import com.cnpeng.piclib.config.PictureSelectionConfig;
 import com.cnpeng.piclib.entity.LocalMedia;
 import com.cnpeng.piclib.tools.DoubleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.FloatRange;
-import androidx.annotation.IntRange;
-import androidx.annotation.StyleRes;
-import androidx.fragment.app.Fragment;
 
 /**
  * author：luck
@@ -24,8 +24,8 @@ import androidx.fragment.app.Fragment;
  */
 
 public class PictureSelectionModel {
-    private PictureSelectionConfig               selectionConfig;
-    private PictureSelector selector;
+    private PictureSelectionConfig selectionConfig;
+    private PictureSelector        selector;
 
     public PictureSelectionModel(PictureSelector selector, int mimeType) {
         this.selector = selector;
@@ -54,7 +54,7 @@ public class PictureSelectionModel {
      * @return PictureSelector instance.
      */
     public PictureSelectionModel addRecordVideoListener(RecordVideoListener recordVideoListener) {
-        selectionConfig.recordVideoListene = recordVideoListener;
+        selectionConfig.recordVideoListener = recordVideoListener;
         return this;
     }
 
@@ -167,6 +167,24 @@ public class PictureSelectionModel {
      */
     public PictureSelectionModel maxSize(long maxSize) {
         selectionConfig.maxSize = maxSize;
+        return this;
+    }
+
+    /**
+     * CnPeng 2019-10-08 15:56
+     * 功用：选择文件时，控制可选择文件的最小高度
+     */
+    public PictureSelectionModel minPicHeight(int picHeight) {
+        selectionConfig.minPicHeight = picHeight;
+        return this;
+    }
+
+    /**
+     * CnPeng 2019-10-08 15:56
+     * 功用：选择文件时，控制可选择文件的最小高度
+     */
+    public PictureSelectionModel minPicWidth(int picWidth) {
+        selectionConfig.minPicWidth = picWidth;
         return this;
     }
 

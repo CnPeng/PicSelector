@@ -16,6 +16,7 @@ import androidx.loader.content.Loader;
 import com.cnpeng.piclib.R;
 import com.cnpeng.piclib.config.PictureConfig;
 import com.cnpeng.piclib.config.PictureMimeType;
+import com.cnpeng.piclib.config.PictureSelectionConfig;
 import com.cnpeng.piclib.entity.LocalMedia;
 import com.cnpeng.piclib.entity.LocalMediaFolder;
 
@@ -62,13 +63,6 @@ public class LocalMediaLoader {
             MediaStore.MediaColumns.HEIGHT,
             MediaStore.MediaColumns.SIZE,
             DURATION};
-    // 图片
-    private static final String   SELECTION  = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0";
-
-    private static final String SELECTION_NOT_GIF = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-            + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-            + " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
 
     // 获取图片or视频
     private static final String[]         SELECTION_ALL_ARGS = {
@@ -76,18 +70,22 @@ public class LocalMediaLoader {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
     };
     private static final String           TAG                = "LocalMediaLoader";
-    private              int              type               = PictureConfig.TYPE_MEDIA_IMAGE;
-    private              FragmentActivity activity;
-    private              boolean          isGif;
-    private              long             videoMaxS          = 0;
-    private              long             videoMinS          = 0;
+    private              int              mType              = PictureConfig.TYPE_MEDIA_IMAGE;
+    private              FragmentActivity mActivity;
+    private              boolean          mIsGif;
+    private              long             mVideoMaxSecond    = 0;
+    private              long             mVideoMinSecond    = 0;
+    private              int              mMinPicHeight;
+    private              int              mMinPicWidth;
 
-    public LocalMediaLoader(FragmentActivity activity, int type, boolean isGif, long videoMaxS, long videoMinS) {
-        this.activity = activity;
-        this.type = type;
-        this.isGif = isGif;
-        this.videoMaxS = videoMaxS;
-        this.videoMinS = videoMinS;
+    public LocalMediaLoader(FragmentActivity activity, PictureSelectionConfig config) {
+        mActivity = activity;
+        mType = config.mimeType;
+        mIsGif = config.isGif;
+        mVideoMaxSecond = config.videoMaxSecond;
+        mVideoMinSecond = config.videoMinSecond;
+        mMinPicHeight = config.minPicHeight;
+        mMinPicWidth = config.minPicWidth;
     }
 
     // 查询条件(音视频)
@@ -108,6 +106,22 @@ public class LocalMediaLoader {
     }
 
     /**
+     * CnPeng:2019-10-08 15:35 图片的过滤条件
+     */
+    private String getPicSelectCondition(boolean isGif) {
+
+        String preCondition = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
+                + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+        if (!isGif) {
+            preCondition += " AND " + MediaStore.MediaColumns.MIME_TYPE + NOT_GIF;
+        }
+
+        preCondition += " AND " + MediaStore.MediaColumns.WIDTH + ">" + mMinPicWidth
+                + " AND " + MediaStore.MediaColumns.HEIGHT + ">" + mMinPicHeight;
+        return preCondition;
+    }
+
+    /**
      * 获取指定类型的文件
      */
     private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
@@ -119,25 +133,26 @@ public class LocalMediaLoader {
      * 说明：
      */
     public void loadAllMedia(final LocalMediaLoadListener imageLoadListener) {
-        activity.getSupportLoaderManager().initLoader(type, null,
+        mActivity.getSupportLoaderManager().initLoader(mType, null,
                 new LoaderManager.LoaderCallbacks<Cursor>() {
                     @Override
                     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                         CursorLoader cursorLoader = null;
                         switch (id) {
                             case PictureConfig.TYPE_MEDIA_ALL:
-                                String all_condition = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), isGif);
+                                String all_condition = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), mIsGif);
                                 cursorLoader = new CursorLoader(
-                                        activity, QUERY_URI,
+                                        mActivity, QUERY_URI,
                                         PROJECTION, all_condition,
                                         SELECTION_ALL_ARGS, ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_MEDIA_IMAGE:
                                 // 只获取图片
                                 String[] MEDIA_TYPE_IMAGE = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                                String picSelectCondition = getPicSelectCondition(mIsGif);
                                 cursorLoader = new CursorLoader(
-                                        activity, QUERY_URI,
-                                        PROJECTION, isGif ? SELECTION : SELECTION_NOT_GIF, MEDIA_TYPE_IMAGE
+                                        mActivity, QUERY_URI,
+                                        PROJECTION, picSelectCondition, MEDIA_TYPE_IMAGE
                                         , ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_MEDIA_VIDEO:
@@ -145,14 +160,14 @@ public class LocalMediaLoader {
                                 String video_condition = getSelectionArgsForSingleMediaCondition(getDurationCondition(0, 0));
                                 String[] MEDIA_TYPE_VIDEO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
                                 cursorLoader = new CursorLoader(
-                                        activity, QUERY_URI, PROJECTION, video_condition, MEDIA_TYPE_VIDEO
+                                        mActivity, QUERY_URI, PROJECTION, video_condition, MEDIA_TYPE_VIDEO
                                         , ORDER_BY);
                                 break;
                             case PictureConfig.TYPE_MEDIA_AUDIO:
                                 String audio_condition = getSelectionArgsForSingleMediaCondition(getDurationCondition(0, AUDIO_DURATION));
                                 String[] MEDIA_TYPE_AUDIO = getSelectionArgsForSingleMediaType(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO);
                                 cursorLoader = new CursorLoader(
-                                        activity, QUERY_URI, PROJECTION, audio_condition, MEDIA_TYPE_AUDIO
+                                        mActivity, QUERY_URI, PROJECTION, audio_condition, MEDIA_TYPE_AUDIO
                                         , ORDER_BY);
                                 break;
                             default:
@@ -173,7 +188,7 @@ public class LocalMediaLoader {
                                 if (count > 0) {
                                     data.moveToFirst();
                                     do {
-                                        if (PictureConfig.TYPE_MEDIA_VIDEO == type) {
+                                        if (PictureConfig.TYPE_MEDIA_VIDEO == mType) {
                                             String pictureType = data.getString(data.getColumnIndexOrThrow(PROJECTION[2]));
 
                                             if ("video/mp4".equals(pictureType)) {
@@ -188,7 +203,7 @@ public class LocalMediaLoader {
                                         sortFolder(imageFolders);
                                         imageFolders.add(0, allImageFolder);
                                         allImageFolder.setFirstImagePath(latelyImages.get(0).getOriginalPath());
-                                        String title = type == PictureMimeType.ofAudio() ? activity.getString(R.string.picture_all_audio) : activity.getString(R.string.picture_camera_roll);
+                                        String title = mType == PictureMimeType.ofAudio() ? mActivity.getString(R.string.picture_all_audio) : mActivity.getString(R.string.picture_camera_roll);
                                         allImageFolder.setName(title);
                                         allImageFolder.setImages(latelyImages);
                                     }
@@ -216,7 +231,9 @@ public class LocalMediaLoader {
      *
      * CnPeng 2019-07-01 14:24 将文件是否存在判断提前，文件不存在也不用再获取其他媒体信息了
      */
-    private void setMediaToList(Cursor data, List<LocalMediaFolder> imageFolders, LocalMediaFolder allImageFolder, List<LocalMedia> latelyImages) {
+    private void setMediaToList(Cursor
+                                        data, List<LocalMediaFolder> imageFolders, LocalMediaFolder
+                                        allImageFolder, List<LocalMedia> latelyImages) {
         String path = data.getString(data.getColumnIndexOrThrow(PROJECTION[1]));
 
         if (isFileExist(path)) {
@@ -242,7 +259,7 @@ public class LocalMediaLoader {
             long fileLength = data.getLong(data.getColumnIndexOrThrow(PROJECTION[5]));
             int duration = data.getInt(data.getColumnIndexOrThrow(PROJECTION[6]));
 
-            LocalMedia image = new LocalMedia(path, duration, type, pictureType, w, h, fileLength);
+            LocalMedia image = new LocalMedia(path, duration, mType, pictureType, w, h, fileLength);
 
             LocalMediaFolder folder = getImageFolder(path, imageFolders);
             List<LocalMedia> images = folder.getImages();
@@ -308,14 +325,14 @@ public class LocalMediaLoader {
      * 获取视频(最长或最小时间)
      */
     private String getDurationCondition(long exMaxLimit, long exMinLimit) {
-        long maxS = videoMaxS == 0 ? Long.MAX_VALUE : videoMaxS;
+        long maxS = mVideoMaxSecond == 0 ? Long.MAX_VALUE : mVideoMaxSecond;
         if (exMaxLimit != 0) {
             maxS = Math.min(maxS, exMaxLimit);
         }
 
         return String.format(Locale.CHINA, "%d <%s duration and duration <= %d",
-                Math.max(exMinLimit, videoMinS),
-                Math.max(exMinLimit, videoMinS) == 0 ? "" : "=",
+                Math.max(exMinLimit, mVideoMinSecond),
+                Math.max(exMinLimit, mVideoMinSecond) == 0 ? "" : "=",
                 maxS);
     }
 

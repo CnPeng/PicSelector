@@ -33,6 +33,8 @@ object TestHandler {
                 .maxSelectNum(1)
                 //                .openCamera(PictureMimeType.ofImage())
                 .enableCrop(true)
+                .minPicHeight(1)
+                .minPicWidth(1)
                 .forResult(pRequestCode)
         //                                } else {
         //                                    Toast.makeText(pActivity, "获取权限失败", Toast.LENGTH_SHORT).show()
