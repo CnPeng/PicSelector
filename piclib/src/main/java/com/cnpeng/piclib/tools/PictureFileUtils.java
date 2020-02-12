@@ -718,7 +718,7 @@ public class PictureFileUtils {
 
                 File targetDir = null;
 
-                if (Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {
+                if (Build.VERSION_CODES.P >= Build.VERSION.SDK_INT) {
                     String targetDirPath = Environment.getExternalStorageDirectory() + "/" + folderName + "/";
                     targetDir = new File(targetDirPath);
                     if (!targetDir.exists()) {
