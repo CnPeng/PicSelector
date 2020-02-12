@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.cnpeng.piclib.R;
 import com.cnpeng.piclib.antutils.MD5Util;
 import com.cnpeng.piclib.antutils.NetworkUtil;
 import com.cnpeng.piclib.antutils.ToastUtil;
@@ -685,95 +686,103 @@ public class PictureFileUtils {
     }
 
     /**
-     * CnPeng 2019-07-01 18:49 保存图片到本地
+     * CnPeng 2019-07-01 18:49 保存图片到本地(检查本地存储和网络是否可用)
      *
      * @param imageUrl   图片地址
      * @param folderName 目标文件夹名称，推荐使用APP名称——R.string.app_name
      */
     public static void saveBitmap(final Context context, final String imageUrl, String folderName) {
         Log.i("PicTool", "被保存的图片地址是：" + imageUrl);
-        if (Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment.getExternalStorageState())) {
 
-            File dir = new File(Environment.getExternalStorageDirectory() + "/" + folderName + "/");
-            if (!dir.exists()) {
-                dir.mkdir();
-            }
-            try {
-                String imageType = imageUrl.endsWith(".gif") || imageUrl.endsWith(".GIF") ? ".gif" : ".png";
-                final String saveName = Environment.getExternalStorageDirectory() + "/" + folderName + "/" + MD5Util.getMD5Str(imageUrl) + imageType;
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (NetworkUtil.isNetworkAvailable(context)) {
-                            try {
-                                getImage(context, imageUrl, saveName);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                ToastUtil.toastShort("保存失败！", context);
-                            }
-                        } else {
-                            ToastUtil.toastShort("保存失败！", context);
-                        }
-                    }
-                }).start();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(context, "保存失败，存储空间不可用！", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(context, "存储空间不可用！", Toast.LENGTH_SHORT).show();
+        if (!NetworkUtil.isNetworkAvailable(context)) {
+            ToastUtil.toastShort(R.string.hint_no_net, context);
+            return;
         }
+
+        if (!Environment.MEDIA_MOUNTED.equalsIgnoreCase(Environment.getExternalStorageState())) {
+            Toast.makeText(context, "存储空间不可用！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        saveImageToTargetDir(context, imageUrl, folderName);
     }
 
     /**
      * CnPeng:2019-07-01 18:49 保存图片到本地
      */
-    public static void getImage(Context context, String path, String saveName) {
+    private static void saveImageToTargetDir(final Context pContext, final String imageUrl,
+                                             final String folderName) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        File file = new File(saveName);
-        if (file.exists()) {
-            ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), context);
-        } else {
+                File targetDir = null;
 
-            // CnPeng 2018/6/13 下午8:56 外层用try catch 包裹，因为在VivoY51手机上，保存个图片都会OOM。。。
-            try {
-                URL url = new URL(path);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                con.setConnectTimeout(1000 * 10);
-                if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP || con.getResponseCode() ==
-                        HttpURLConnection.HTTP_MOVED_PERM) {
-                    path = con.getHeaderField("Location");
-                    url = new URL(path);
-                    con.disconnect();
-                    con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("GET");
-                    con.setConnectTimeout(1000 * 10);
-                }
-                if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-
-                    InputStream inputStream = con.getInputStream();
-                    byte[] b = getByte(inputStream);
-                    //            File file = new File(saveName);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    fileOutputStream.write(b);
-                    fileOutputStream.close();
-                    // 发一个系统广播通知手机有图片更，是用户可以在相册中查看。广播如下：
-                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    Uri uri = Uri.fromFile(file);
-                    intent.setData(uri);
-                    context.sendBroadcast(intent);
-                    ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), context);
+                if (Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {
+                    String targetDirPath = Environment.getExternalStorageDirectory() + "/" + folderName + "/";
+                    targetDir = new File(targetDirPath);
+                    if (!targetDir.exists()) {
+                        if (!targetDir.mkdir()) {
+                            ToastUtil.toastLong("目录创建失败-cp0001", pContext);
+                            return;
+                        }
+                    }
                 } else {
-                    ToastUtil.toastLong("保存失败：网络请求错误：" + con.getResponseCode(), context);
+                    targetDir = pContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ToastUtil.toastShort("保存失败！", context);
+
+                if (null == targetDir) {
+                    ToastUtil.toastLong("目录创建失败-cp0002", pContext);
+                    return;
+                }
+
+                String imageType = imageUrl.endsWith(".gif") || imageUrl.endsWith(".GIF") ? ".gif" : ".png";
+                final String imgName = MD5Util.getMD5Str(imageUrl) + imageType;
+
+                File file = new File(targetDir, imgName);
+                if (file.exists()) {
+                    ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), pContext);
+                } else {
+
+                    // CnPeng 2018/6/13 下午8:56 外层用try catch 包裹，因为在VivoY51手机上，保存个图片都会OOM。。。
+                    try {
+                        URL url = new URL(imageUrl);
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                        con.setRequestMethod("GET");
+                        con.setConnectTimeout(1000 * 10);
+                        if (con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP || con.getResponseCode() ==
+                                HttpURLConnection.HTTP_MOVED_PERM) {
+                            String tempImgUrl = con.getHeaderField("Location");
+                            url = new URL(tempImgUrl);
+                            con.disconnect();
+                            con = (HttpURLConnection) url.openConnection();
+                            con.setRequestMethod("GET");
+                            con.setConnectTimeout(1000 * 10);
+                        }
+                        if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                            InputStream inputStream = con.getInputStream();
+                            byte[] b = getByte(inputStream);
+                            FileOutputStream fileOutputStream = new FileOutputStream(file);
+                            fileOutputStream.write(b);
+                            fileOutputStream.close();
+                            // 发一个系统广播通知手机有图片更，是用户可以在相册中查看。广播如下：
+                            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            Uri uri = Uri.fromFile(file);
+                            intent.setData(uri);
+                            pContext.sendBroadcast(intent);
+                            ToastUtil.toastLong("文件存储位置：" + file.getAbsolutePath(), pContext);
+                        } else {
+                            ToastUtil.toastLong("保存失败：网络请求错误：" + con.getResponseCode(), pContext);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ToastUtil.toastShort("保存失败！", pContext);
+                    }
+                }
+
             }
-        }
+        }).start();
     }
 
     /**
